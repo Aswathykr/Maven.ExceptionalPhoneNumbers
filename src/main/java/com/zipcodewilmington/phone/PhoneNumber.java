@@ -2,11 +2,18 @@ package com.zipcodewilmington.phone;
 
 import com.zipcodewilmington.exceptions.InvalidPhoneNumberFormatException;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by leon on 5/10/17.
  */
 public final class PhoneNumber {
     private final String phoneNumberString;
+
+    String areaCode;
+    String centralOfficeCode;
+    String phoneLineCode;
 
     // default constructor is uncallable
     private PhoneNumber() throws InvalidPhoneNumberFormatException {
@@ -16,9 +23,16 @@ public final class PhoneNumber {
     // non-default constructor is package-protected
     protected PhoneNumber(String phoneNumber) throws InvalidPhoneNumberFormatException {
         //validate phone number with format `(###)-###-####`
-        if (!phoneNumber.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) {
+        String toMatchPattern = "\\((\\d{3}\\))-(\\d{3})-(\\d{4})";
+        if (!phoneNumber.matches(toMatchPattern)) {
             throw new InvalidPhoneNumberFormatException();
         }
+        Pattern pattern = Pattern.compile(toMatchPattern, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        matcher.find();
+        areaCode = matcher.group(1);
+        centralOfficeCode = matcher.group(2);
+        centralOfficeCode = matcher.group(3);
         this.phoneNumberString = phoneNumber;
     }
 
